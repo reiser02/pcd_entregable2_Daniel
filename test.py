@@ -1,5 +1,5 @@
 import pytest
-from Entregable import Publicador, Sistema, Media, DesviacionTipica, MinMax, CalcularEstadisticos
+from Entregable import Publicador, Sistema, Media, DesviacionTipica, MinMax, CalcularEstadisticos, ComprobarUmbral, DiferenciaTemperatura
 
 
 def test_alta():
@@ -43,3 +43,20 @@ def test_calcular_estadisticos():
     m = Media()
     calculadoraEstadisticos = CalcularEstadisticos(m)
     assert calculadoraEstadisticos(datos, "Media") == m.aplicar_estadistico(datos)
+
+def test_comprobaciones():
+    datos = [1, 6, 3, 5, 6, 2]
+    media = Media()
+    desviacion = DesviacionTipica()
+    minmax = MinMax()
+    estadisticos = CalcularEstadisticos([media, desviacion, minmax])
+    umbral = ComprobarUmbral(estadisticos, 25)
+    diferenciaTemp = DiferenciaTemperatura(umbral)
+
+    resultado = diferenciaTemp.calcular(datos)
+
+    assert (round(resultado[0], 2) == round(media(datos), 2) and 
+            round(resultado[1], 2) == round(desviacion(datos), 2) and
+            round(resultado[2], 2) == round(minmax(datos), 2) and
+            resultado[3] == False and
+            resultado[4] == False)
