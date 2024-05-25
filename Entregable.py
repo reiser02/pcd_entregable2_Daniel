@@ -75,7 +75,7 @@ class Publicador:
         except Exception as e:
             print(e)
     
-    def _notificar_subscriptores(self, valor):
+    def notificar_subscriptores(self, valor):
         for s in self.subscriptores:
             s.actualizar(valor)
 
