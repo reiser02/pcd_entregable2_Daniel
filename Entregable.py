@@ -1,3 +1,6 @@
+import random
+import time
+
 class EstrategiaEstadisticos:
     def aplicar_estadistico(self):
         pass
@@ -9,7 +12,7 @@ class Media(EstrategiaEstadisticos):
 class DesviacionTipica(EstrategiaEstadisticos):
     def aplicar_estadistico(self, datos):
         media = sum(datos) / len(datos)
-        return (sum(map(lambda x: (x + media) ** 2, datos)) / (len(datos) - 1)) ** (1 / 2)
+        return (sum(map(lambda x: (x - media) ** 2, datos)) / (len(datos) - 1)) ** (1 / 2)
     
 class MinMax(EstrategiaEstadisticos):
     def aplicar_estadistico(self, datos):
@@ -23,9 +26,8 @@ class Comprobaciones:
         pass
 
 class CalcularEstadisticos(Comprobaciones):
-    def __init__(self, estrategias, sucesor):
+    def __init__(self, estrategias, sucesor=None):
         super().__init__(sucesor)
-        self.estrategias = dict()
         self.estrategias = estrategias
 
     def calcular(self, datos):
@@ -72,9 +74,10 @@ class Publicador:
             self.subscriptores.remove(subscriptor)
         except Exception as e:
             print(e)
-    def notificar_subscriptores(self):
+    
+    def _notificar_subscriptores(self, valor):
         for s in self.subscriptores:
-            s.actualizar()
+            s.actualizar(valor)
 
 class Subscriptor:
     def actualizar(self):
@@ -87,7 +90,7 @@ class Sistema(Subscriptor):
         self.datos = list()
 
         estadisticos = CalcularEstadisticos([Media(), DesviacionTipica(), MinMax()])
-        umbral = ComprobarUmbral(estadisticos, 25)
+        umbral = ComprobarUmbral(estadisticos, 15)
         
         self.comprobaciones = DiferenciaTemperatura(umbral)
 
@@ -98,11 +101,24 @@ class Sistema(Subscriptor):
         return cls._unicaInstancia
     
     def actualizar(self, valor):
-        if len(self.datos) == 12:
-            self.datos.pop(0)
+        if len(self.datos) != 12:
             self.datos.append(valor)
         else:
+            self.datos.pop(0)
             self.datos.append(valor)
+            resultado = self.comprobaciones.calcular(self.datos)
 
-        print(self.comprobaciones(self.datos))
+            print(f"Media: {resultado[0]}; Desviación típica: {resultado[1]} \nMínimo: {resultado[2][0]}; " +
+                  f"Máximo: {resultado[2][1]} \nUmbral: {resultado[3]}; Diferencia: {resultado[4]}")
 
+
+if __name__ == "__main__":
+    publicador = Publicador()
+    sistema = Sistema().obtener_instancia()
+    publicador.alta(sistema)
+
+    while True:
+        n = random.uniform(-3, 20)
+        publicador.notificar_subscriptores(n)
+        time.sleep(5)
+        
