@@ -41,11 +41,11 @@ def test_max():
 def test_calcular_estadisticos():
     datos = [1, 6, 3, 5, 6, 2]
     m = Media()
-    calculadoraEstadisticos = CalcularEstadisticos(m)
-    assert calculadoraEstadisticos(datos, "Media") == m.aplicar_estadistico(datos)
+    calculadoraEstadisticos = CalcularEstadisticos([m])
+    assert round(calculadoraEstadisticos.calcular(datos)[0], 2) == round(m.aplicar_estadistico(datos), 2)
 
 def test_comprobaciones():
-    datos = [1, 6, 3, 5, 6, 2]
+    datos = [1, 6, 3, 5, 6, 2, 3, 8, 5, 9, 10, 3, 15]
     media = Media()
     desviacion = DesviacionTipica()
     minmax = MinMax()
@@ -55,8 +55,10 @@ def test_comprobaciones():
 
     resultado = diferenciaTemp.calcular(datos)
 
-    assert (round(resultado[0], 2) == round(media(datos), 2) and 
-            round(resultado[1], 2) == round(desviacion(datos), 2) and
-            round(resultado[2], 2) == round(minmax(datos), 2) and
+    print(resultado)
+
+    assert (round(resultado[0], 2) == round(media.aplicar_estadistico(datos), 2) and 
+            round(resultado[1], 2) == round(desviacion.aplicar_estadistico(datos), 2) and
+            resultado[2] == minmax.aplicar_estadistico(datos) and
             resultado[3] == False and
             resultado[4] == False)
