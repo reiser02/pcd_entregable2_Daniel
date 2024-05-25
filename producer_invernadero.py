@@ -23,10 +23,6 @@ class Reader:
         columns_tmp = self.data.columns
         columns_tmp = [column_name.lower() for column_name in columns_tmp]
         self.data.columns = columns_tmp
-        self.data.rename(columns={'open': 'open_price',
-                                  'close': 'close_price',
-                                  'adj close': 'adj_close'}, inplace=True)
-
 
 
 class Producer:
