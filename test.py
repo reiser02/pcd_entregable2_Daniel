@@ -24,7 +24,7 @@ def test_desviacion_tipica():
     datos = [1, 6, 3, 5, 6, 2]
     d = DesviacionTipica()
     media = sum(datos) / len(datos)
-    assert d.aplicar_estadistico(datos) == (sum(map(lambda x: (x + media) ** 2, datos)) / (len(datos) - 1)) ** (1 / 2)
+    assert d.aplicar_estadistico(datos) == (sum(map(lambda x: (x - media) ** 2, datos)) / (len(datos) - 1)) ** (1 / 2)
 
 def test_min():
     datos = [1, 6, 3, 5, 6, 2]
