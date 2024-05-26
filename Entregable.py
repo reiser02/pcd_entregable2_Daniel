@@ -10,6 +10,7 @@ class Media(EstrategiaEstadisticos):
         return sum(datos) / len(datos)
     
 class DesviacionTipica(EstrategiaEstadisticos):
+    #Cálculo de la desviación usando programación funcional
     def aplicar_estadistico(self, datos):
         media = sum(datos) / len(datos)
         return (sum(map(lambda x: (x - media) ** 2, datos)) / (len(datos) - 1)) ** (1 / 2)
@@ -25,6 +26,14 @@ class Comprobaciones:
     def calcular(self):
         pass
 
+'''
+He optado por pasarle a esta subclase una lista con todos los estadísticos que tendrá esta calculadora
+de estadísticos.
+
+He optado para este patrón que primero se haga el calcular del sucesor, de tal forma que si la primera comprobación
+que se encadene es la de CalcularEstadísticos, todos los estadísticos quedarían al principio de la lista que se devuelve 
+como resultado.
+'''
 class CalcularEstadisticos(Comprobaciones):
     def __init__(self, estrategias, sucesor=None):
         super().__init__(sucesor)
@@ -39,6 +48,7 @@ class CalcularEstadisticos(Comprobaciones):
         for e in self.estrategias:
             resultado_estadisticos.append(e.aplicar_estadistico(datos))
 
+        #Si tiene un sucesor se encadena el resultado de ese sucesor con el resultado de este cálculo
         if self._sucesor is not None:
             return resultado_sucesor + resultado_estadisticos
         
@@ -88,7 +98,7 @@ class Sistema(Subscriptor):
     
     def __init__(self):
         self.datos = list()
-
+        #Se crear los estadísticos y la cadena al crear el sistema
         estadisticos = CalcularEstadisticos([Media(), DesviacionTipica(), MinMax()])
         umbral = ComprobarUmbral(estadisticos, 15)
         
@@ -101,13 +111,15 @@ class Sistema(Subscriptor):
         return cls._unicaInstancia
     
     def actualizar(self, valor):
+        #No se hará ningún cálculo hasta que se hayan llenado los datos correspondientes a 1 minuto
         if len(self.datos) != 12:
             self.datos.append(valor)
         else:
+            #De esta forma solo habrá 12 datos y el nuevo siempre estará al final
             self.datos.pop(0)
             self.datos.append(valor)
             resultado = self.comprobaciones.calcular(self.datos)
-
+            
             print(f"Media: {resultado[0]}; Desviación típica: {resultado[1]} \nMínimo: {resultado[2][0]}; " +
                   f"Máximo: {resultado[2][1]} \nUmbral: {resultado[3]}; Diferencia: {resultado[4]}\n\n")
 
