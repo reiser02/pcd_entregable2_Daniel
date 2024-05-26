@@ -109,7 +109,7 @@ class Sistema(Subscriptor):
             resultado = self.comprobaciones.calcular(self.datos)
 
             print(f"Media: {resultado[0]}; Desviación típica: {resultado[1]} \nMínimo: {resultado[2][0]}; " +
-                  f"Máximo: {resultado[2][1]} \nUmbral: {resultado[3]}; Diferencia: {resultado[4]}")
+                  f"Máximo: {resultado[2][1]} \nUmbral: {resultado[3]}; Diferencia: {resultado[4]}\n\n")
 
 
 if __name__ == "__main__":
